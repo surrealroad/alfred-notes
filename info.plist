@@ -53,31 +53,6 @@
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>output</key>
-				<integer>0</integer>
-				<key>removeextension</key>
-				<false/>
-				<key>sticky</key>
-				<false/>
-				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>Note created</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -93,9 +68,9 @@ property cacheExpires : 2 * minutes
 property shouldCheckForUpdates : true
 property checkFrequency : 4 * days
 
-property currentVersion : 5
+property currentVersion : 6
 property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
-property wf : load script POSIX file (workflowFolder &amp; "/workflow.scpt")
+property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property wfname : "Notes"
 property bundleid : "com.surrealroad.alfred-note"property uid : "add-note"property addActionTitle : "Add Note"property cacheFile : "cache.plist"
 
@@ -134,12 +109,37 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>output</key>
+				<integer>0</integer>
+				<key>removeextension</key>
+				<false/>
+				<key>sticky</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Note created</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>escaping</key>
 				<integer>4</integer>
 				<key>script</key>
 				<string>property notesAccount : ""property notesFolder : ""
 property workflowFolder : do shell script "pwd"property lib: load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
-property wf: load script POSIX file (workflowFolder &amp; "/workflow.scpt")
+property wf: load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property bundleid : "com.surrealroad.alfred-note"property cacheFile : "cache.plist"
 
 set wf to wf's new_workflow_with_bundle(bundleid)
@@ -170,7 +170,7 @@ my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		op
 				<string>property notesAccount : ""property notesFolder : ""
 
 property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
-property wf : load script POSIX file (workflowFolder &amp; "/workflow.scpt")
+property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property wfname : "Notes"
 property bundleid : "com.surrealroad.alfred-note"property uid : "add-clipnote"property addActionTitle : "Add Note from clipboard"
 
@@ -203,6 +203,7 @@ To create a note from the clipboard, type "nclip optional_note_name"
  
 Changelog:
 
+Tuesday, 17 September 2013 – Updated q_workflow module to latest version
 Thursday, 18 April 2013 – Only first line is used as a title when using "nclip" with no arguments
 Sunday, 7 April 2013 – Properly escape illegal characters in query
 Friday, 5 April 2013 – Fixed an issue where a temporary file was getting written to the wrong place, sorry about that!

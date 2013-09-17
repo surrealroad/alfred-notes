@@ -6,6 +6,7 @@ To create a note from the clipboard, type "nclip optional_note_name"
  
 Changelog:
 
+Tuesday, 17 September 2013 – Updated q_workflow module to latest version
 Thursday, 18 April 2013 – Only first line is used as a title when using "nclip" with no arguments
 Sunday, 7 April 2013 – Properly escape illegal characters in query
 Friday, 5 April 2013 – Fixed an issue where a temporary file was getting written to the wrong place, sorry about that!
