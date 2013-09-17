@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.surrealroad.alfred-note</string>
+	<key>connections</key>
+	<dict>
+		<key>A06E633A-6DA1-480D-9666-79AE7FA0E96B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>FFC9C9E2-2539-44FD-A081-41DE4D12210D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>FFC9C9E2-2539-44FD-A081-41DE4D12210D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>FFC9C9E2-2539-44FD-A081-41DE4D12210D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Jack James</string>
+	<key>description</key>
+	<string>Adds notes to Notes.app</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Notes</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>output</key>
+				<integer>0</integer>
+				<key>removeextension</key>
+				<false/>
+				<key>sticky</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Note created</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>keyword</key>
+				<string>n</string>
+				<key>runningsubtext</key>
+				<string>Fetching notes…</string>
+				<key>script</key>
+				<string>property notesAccount : ""property notesFolder : ""
+
+property cacheExpires : 2 * minutes
+property shouldCheckForUpdates : true
+property checkFrequency : 4 * days
+
+property currentVersion : 5
+property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
+property wf : load script POSIX file (workflowFolder &amp; "/workflow.scpt")
+property wfname : "Notes"
+property bundleid : "com.surrealroad.alfred-note"property uid : "add-note"property addActionTitle : "Add Note"property cacheFile : "cache.plist"
+
+set wf to wf's new_workflow_with_bundle(bundleid)
+set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alfred_script(q)
+	--if q is "help" then return lib's alfred_result_items({lib's reminderHelp()})	-- set create note action	set theText to ""	set valid to "no"
+	lib's setNotesActive()	
+	set theText to q		if theText is "" then		set valid to "no"	else		set valid to "yes"	end if		if valid is "no" then		set subtitle to "Create a new note"	else		set subtitle to lib's formatNoteSubtitle(theText, notesAccount, notesFolder)	end if	
+	set addAction to ""
+	if theText is not "" then set addAction to lib's alfred_result_item(uid, addActionTitle, subtitle, q, valid)		--fetch exisitng reminders
+	(*	set reminderList to {}	set existingReminders to lib's fetchReminderList(wf, cacheFile, cacheExpires)	set filteredReminders to lib's filterReminders(existingReminders, q)
+	*)
+	
+	--version check
+	if shouldCheckForUpdates then 
+		set versionAction to lib's alfred_version_notify(wfname, bundleid, currentVersion, wf, cacheFile, checkFrequency)
+	else
+		set versionAction to ""
+	end if		return lib's alfred_result_items({versionAction, addAction})end alfred_script</string>
+				<key>subtext</key>
+				<string>Adds a new note in Notes.app</string>
+				<key>title</key>
+				<string>Add Note</string>
+				<key>type</key>
+				<integer>6</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>script</key>
+				<string>property notesAccount : ""property notesFolder : ""
+property workflowFolder : do shell script "pwd"property lib: load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
+property wf: load script POSIX file (workflowFolder &amp; "/workflow.scpt")
+property bundleid : "com.surrealroad.alfred-note"property cacheFile : "cache.plist"
+
+set wf to wf's new_workflow_with_bundle(bundleid)
+
+my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf)	else		lib's createNote(first paragraph of q, q, notesFolder, notesAccount)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
+				<key>type</key>
+				<integer>6</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>FFC9C9E2-2539-44FD-A081-41DE4D12210D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>keyword</key>
+				<string>nclip</string>
+				<key>runningsubtext</key>
+				<string>Adds a new note to Notes.app from the clipboard</string>
+				<key>script</key>
+				<string>property notesAccount : ""property notesFolder : ""
+
+property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
+property wf : load script POSIX file (workflowFolder &amp; "/workflow.scpt")
+property wfname : "Notes"
+property bundleid : "com.surrealroad.alfred-note"property uid : "add-clipnote"property addActionTitle : "Add Note from clipboard"
+
+set wf to wf's new_workflow_with_bundle(bundleid)
+set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alfred_script(q)	
+	set theTitle to q
+	
+	set theBody to (the clipboard as Unicode text)		if theTitle is not "" then		set subtitle to "Create a new note from clipboard about " &amp; theTitle	else		set subtitle to "Create a new note about " &amp; first paragraph of theBody	end if	
+	set addAction to lib's alfred_result_item(uid, addActionTitle, subtitle, "nclip:" &amp; q, "yes")		return lib's alfred_result_items({addAction})end alfred_script</string>
+				<key>subtext</key>
+				<string>Adds a new note to Notes.app from the clipboard</string>
+				<key>title</key>
+				<string>Add Note from Clipboard</string>
+				<key>type</key>
+				<integer>6</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>A06E633A-6DA1-480D-9666-79AE7FA0E96B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>To use, just type "n note_text" into Alfred. E.g. "n something very important I will probably forget"
+To create a note from the clipboard, type "nclip optional_note_name"
+ 
+Changelog:
+
+Thursday, 18 April 2013 – Only first line is used as a title when using "nclip" with no arguments
+Sunday, 7 April 2013 – Properly escape illegal characters in query
+Friday, 5 April 2013 – Fixed an issue where a temporary file was getting written to the wrong place, sorry about that!
+Thursday, 4 April 2013 – Combined into single workflow; renamed to "Notes"; fixed an issue with clip keyword; nclip now pastes HTML if possible; workflow will notify if updates are available
+Saturday, 16 March 2013 – First version
+
+Uses AppleScript implementation of the Workflow object class for Alfred 2 (https://github.com/qlassiqa/qWorkflow)</string>
+	<key>uidata</key>
+	<dict>
+		<key>159A291E-3339-491E-8D3F-79091BE0319B</key>
+		<dict>
+			<key>ypos</key>
+			<real>60</real>
+		</dict>
+		<key>A06E633A-6DA1-480D-9666-79AE7FA0E96B</key>
+		<dict>
+			<key>ypos</key>
+			<real>180</real>
+		</dict>
+		<key>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</key>
+		<dict>
+			<key>ypos</key>
+			<real>60</real>
+		</dict>
+		<key>FFC9C9E2-2539-44FD-A081-41DE4D12210D</key>
+		<dict>
+			<key>ypos</key>
+			<real>60</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>http://www.surrealroad.com</string>
+</dict>
+</plist>
