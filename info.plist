@@ -16,6 +16,14 @@
 				<key>modifiersubtext</key>
 				<string></string>
 			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Create and open note in new window</string>
+			</dict>
 		</array>
 		<key>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</key>
 		<array>
@@ -26,6 +34,14 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Create and open note in new window</string>
 			</dict>
 		</array>
 		<key>FFC9C9E2-2539-44FD-A081-41DE4D12210D</key>
@@ -53,6 +69,31 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>output</key>
+				<integer>0</integer>
+				<key>removeextension</key>
+				<false/>
+				<key>sticky</key>
+				<false/>
+				<key>text</key>
+				<string>{query}</string>
+				<key>title</key>
+				<string>Note created</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -68,7 +109,7 @@ property cacheExpires : 2 * minutes
 property shouldCheckForUpdates : true
 property checkFrequency : 4 * days
 
-property currentVersion : 6
+property currentVersion : 7
 property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
 property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property wfname : "Notes"
@@ -109,42 +150,18 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>lastpathcomponent</key>
-				<false/>
-				<key>onlyshowifquerypopulated</key>
-				<true/>
-				<key>output</key>
-				<integer>0</integer>
-				<key>removeextension</key>
-				<false/>
-				<key>sticky</key>
-				<false/>
-				<key>text</key>
-				<string>{query}</string>
-				<key>title</key>
-				<string>Note created</string>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.notification</string>
-			<key>uid</key>
-			<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>escaping</key>
 				<integer>4</integer>
 				<key>script</key>
 				<string>property notesAccount : ""property notesFolder : ""
+property alwaysShow: false
 property workflowFolder : do shell script "pwd"property lib: load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
 property wf: load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property bundleid : "com.surrealroad.alfred-note"property cacheFile : "cache.plist"
 
 set wf to wf's new_workflow_with_bundle(bundleid)
 
-my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf)	else		lib's createNote(first paragraph of q, q, notesFolder, notesAccount)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
+my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf, alwaysShow)	else		lib's createNote(first paragraph of q, q, notesFolder, notesAccount, alwaysShow)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
 				<key>type</key>
 				<integer>6</integer>
 			</dict>
@@ -196,6 +213,30 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>script</key>
+				<string>property notesAccount : ""property notesFolder : ""
+property workflowFolder : do shell script "pwd"property lib: load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
+property wf: load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
+property bundleid : "com.surrealroad.alfred-note"property cacheFile : "cache.plist"
+
+set wf to wf's new_workflow_with_bundle(bundleid)
+
+my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf, true)	else		lib's createNote(first paragraph of q, q, notesFolder, notesAccount, true)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
+				<key>type</key>
+				<integer>6</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>To use, just type "n note_text" into Alfred. E.g. "n something very important I will probably forget"
@@ -203,6 +244,7 @@ To create a note from the clipboard, type "nclip optional_note_name"
  
 Changelog:
 
+Monday, 13 October 2014 – Hold option to open note window after creation
 Tuesday, 17 September 2013 – Updated q_workflow module to latest version
 Thursday, 18 April 2013 – Only first line is used as a title when using "nclip" with no arguments
 Sunday, 7 April 2013 – Properly escape illegal characters in query
@@ -213,6 +255,11 @@ Saturday, 16 March 2013 – First version
 Uses AppleScript implementation of the Workflow object class for Alfred 2 (https://github.com/qlassiqa/qWorkflow)</string>
 	<key>uidata</key>
 	<dict>
+		<key>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</key>
+		<dict>
+			<key>ypos</key>
+			<real>180</real>
+		</dict>
 		<key>159A291E-3339-491E-8D3F-79091BE0319B</key>
 		<dict>
 			<key>ypos</key>
