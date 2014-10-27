@@ -69,6 +69,63 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>keyword</key>
+				<string>n</string>
+				<key>runningsubtext</key>
+				<string>Fetching notes…</string>
+				<key>script</key>
+				<string>property notesAccount : ""property notesFolder : ""
+
+property cacheExpires : 2 * minutes
+property shouldCheckForUpdates : true
+property checkFrequency : 4 * days
+
+property currentVersion : 8
+property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
+property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
+property wfname : "Notes"
+property bundleid : "com.surrealroad.alfred-note"property uid : "add-note"property addActionTitle : "Add Note"property cacheFile : "cache.plist"
+
+set wf to wf's new_workflow_with_bundle(bundleid)
+set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alfred_script(q)
+	--if q is "help" then return lib's alfred_result_items({lib's reminderHelp()})	-- set create note action	set theText to ""	set valid to "no"
+	lib's setNotesActive()	
+	set theText to q		if theText is "" then		set valid to "no"	else		set valid to "yes"	end if		if valid is "no" then		set subtitle to "Create a new note"	else		set subtitle to lib's formatNoteSubtitle(theText, notesAccount, notesFolder)	end if	
+	set addAction to ""
+	if theText is not "" then set addAction to lib's alfred_result_item(uid, addActionTitle, subtitle, q, valid)		--fetch exisitng reminders
+	(*	set reminderList to {}	set existingReminders to lib's fetchReminderList(wf, cacheFile, cacheExpires)	set filteredReminders to lib's filterReminders(existingReminders, q)
+	*)
+	
+	--version check
+	set versionAction to ""
+	if shouldCheckForUpdates then 
+	try
+		set versionAction to lib's alfred_version_notify(wfname, bundleid, currentVersion, wf, cacheFile, checkFrequency)
+	end try
+	end if		return lib's alfred_result_items({versionAction, addAction})end alfred_script</string>
+				<key>subtext</key>
+				<string>Adds a new note in Notes.app</string>
+				<key>title</key>
+				<string>Add Note</string>
+				<key>type</key>
+				<integer>6</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
@@ -88,62 +145,6 @@
 			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
 			<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>escaping</key>
-				<integer>4</integer>
-				<key>keyword</key>
-				<string>n</string>
-				<key>runningsubtext</key>
-				<string>Fetching notes…</string>
-				<key>script</key>
-				<string>property notesAccount : ""property notesFolder : ""
-
-property cacheExpires : 2 * minutes
-property shouldCheckForUpdates : true
-property checkFrequency : 4 * days
-
-property currentVersion : 7
-property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
-property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
-property wfname : "Notes"
-property bundleid : "com.surrealroad.alfred-note"property uid : "add-note"property addActionTitle : "Add Note"property cacheFile : "cache.plist"
-
-set wf to wf's new_workflow_with_bundle(bundleid)
-set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alfred_script(q)
-	--if q is "help" then return lib's alfred_result_items({lib's reminderHelp()})	-- set create note action	set theText to ""	set valid to "no"
-	lib's setNotesActive()	
-	set theText to q		if theText is "" then		set valid to "no"	else		set valid to "yes"	end if		if valid is "no" then		set subtitle to "Create a new note"	else		set subtitle to lib's formatNoteSubtitle(theText, notesAccount, notesFolder)	end if	
-	set addAction to ""
-	if theText is not "" then set addAction to lib's alfred_result_item(uid, addActionTitle, subtitle, q, valid)		--fetch exisitng reminders
-	(*	set reminderList to {}	set existingReminders to lib's fetchReminderList(wf, cacheFile, cacheExpires)	set filteredReminders to lib's filterReminders(existingReminders, q)
-	*)
-	
-	--version check
-	if shouldCheckForUpdates then 
-		set versionAction to lib's alfred_version_notify(wfname, bundleid, currentVersion, wf, cacheFile, checkFrequency)
-	else
-		set versionAction to ""
-	end if		return lib's alfred_result_items({versionAction, addAction})end alfred_script</string>
-				<key>subtext</key>
-				<string>Adds a new note in Notes.app</string>
-				<key>title</key>
-				<string>Add Note</string>
-				<key>type</key>
-				<integer>6</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -243,7 +244,7 @@ my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		op
 To create a note from the clipboard, type "nclip optional_note_name"
  
 Changelog:
-
+Monday, 27 October 2014 – workaround for apple bug #18734006 on OS 10.10
 Monday, 13 October 2014 – Hold option to open note window after creation
 Tuesday, 17 September 2013 – Updated q_workflow module to latest version
 Thursday, 18 April 2013 – Only first line is used as a title when using "nclip" with no arguments
