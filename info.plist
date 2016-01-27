@@ -117,7 +117,7 @@ property cacheExpires : 2 * minutes
 property shouldCheckForUpdates : true
 property checkFrequency : 4 * days
 
-property currentVersion : 1
+property currentVersion : 2
 property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
 property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property wfname : "Notes"
@@ -271,6 +271,7 @@ To create a note from the clipboard, type "nclip optional_note_name"
 This workflow will only work with iCloud-enabled Notes accounts. See the thread http://www.alfredforum.com/topic/1009-add-new-note/ for the alternate version
 
 Changelog:
+Wednesday, 27 January 2016 – Fixed an issue with notes from clipboard not working
 Friday, 16 October 2015 – Split workflow to a new one that is iCloud-enabled
 Monday, 27 October 2014 – workaround for apple bug #18734006 on OS 10.10
 Monday, 13 October 2014 – Hold option to open note window after creation
