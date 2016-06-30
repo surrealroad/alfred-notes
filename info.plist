@@ -117,7 +117,7 @@ property cacheExpires : 2 * minutes
 property shouldCheckForUpdates : true
 property checkFrequency : 4 * days
 
-property currentVersion : 3
+property currentVersion : 4
 property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
 property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property wfname : "Notes"
@@ -389,6 +389,7 @@ To create a note from the clipboard, type "nclip optional_note_name"
 This workflow will only work with iCloud-enabled Notes accounts. See the thread http://www.alfredforum.com/topic/1009-add-new-note/ for the alternate version
 
 Changelog:
+Thursday, 30 June 2016 – Updated for Alfred 3. Alfred 2 is no longer supported.
 Wednesday, 27 January 2016 – Fixed an issue with notes from clipboard not working; existing notes are now searched too (thanks, Vero!)
 Friday, 16 October 2015 – Split workflow to a new one that is iCloud-enabled
 Monday, 27 October 2014 – workaround for apple bug #18734006 on OS 10.10
@@ -453,6 +454,8 @@ Uses AppleScript implementation of the Workflow object class for Alfred 2 (https
 			<real>60</real>
 		</dict>
 	</dict>
+	<key>version</key>
+	<string></string>
 	<key>webaddress</key>
 	<string>http://www.surrealroad.com</string>
 </dict>
