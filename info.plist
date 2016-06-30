@@ -15,6 +15,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>A06E633A-6DA1-480D-9666-79AE7FA0E96B</key>
@@ -26,6 +28,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -34,6 +38,8 @@
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
 				<string>Create and open note in new window</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</key>
@@ -45,6 +51,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>destinationuid</key>
@@ -53,6 +61,8 @@
 				<integer>524288</integer>
 				<key>modifiersubtext</key>
 				<string>Create and open note in new window</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>FFC9C9E2-2539-44FD-A081-41DE4D12210D</key>
@@ -64,6 +74,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -74,12 +86,14 @@
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>Notes (iCloud)</string>
+	<string>Notes for Alfred 3 and iCloud</string>
 	<key>objects</key>
 	<array>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -126,6 +140,10 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 		set versionAction to lib's alfred_version_notify(wfname, bundleid, currentVersion, wf, cacheFile, checkFrequency)
 	end try
 	end if		return lib's alfred_result_items({versionAction, addAction})end alfred_script</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>subtext</key>
 				<string>Adds a new note in Notes.app</string>
 				<key>title</key>
@@ -140,7 +158,7 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 			<key>uid</key>
 			<string>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -149,11 +167,7 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 				<false/>
 				<key>onlyshowifquerypopulated</key>
 				<true/>
-				<key>output</key>
-				<integer>0</integer>
 				<key>removeextension</key>
-				<false/>
-				<key>sticky</key>
 				<false/>
 				<key>text</key>
 				<string>{query}</string>
@@ -165,7 +179,7 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 			<key>uid</key>
 			<string>159A291E-3339-491E-8D3F-79091BE0319B</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -187,6 +201,10 @@ my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		op
 		if (count of paragraphs of q) is greater than 1 then			set theBody to paragraphs 2 thru -1 of q
 		else
 			set theBody to ""		end if		lib's createNote(first paragraph of q,  theBody, notesFolder, notesAccount, alwaysShow)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>6</integer>
 			</dict>
@@ -195,7 +213,7 @@ my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		op
 			<key>uid</key>
 			<string>FFC9C9E2-2539-44FD-A081-41DE4D12210D</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -215,6 +233,10 @@ set wf to wf's new_workflow_with_bundle(bundleid)
 my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf, true)	else		if (count of paragraphs of q) is greater than 1 then			set theBody to paragraphs 2 thru -1 of q
 		else
 			set theBody to ""		end if		lib's createNote(first paragraph of q,  theBody, notesFolder, notesAccount, true)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>type</key>
 				<integer>6</integer>
 			</dict>
@@ -223,11 +245,13 @@ my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		op
 			<key>uid</key>
 			<string>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -258,6 +282,10 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 	
 	set theBody to (the clipboard as Unicode text)		if theTitle is not "" then		set subtitle to "Create a new note from clipboard about " &amp; theTitle	else		set subtitle to "Create a new note about " &amp; first paragraph of theBody	end if	
 	set addAction to lib's alfred_result_item(uid, addActionTitle, subtitle, "nclip:" &amp; q, "yes")		return lib's alfred_result_items({addAction})end alfred_script</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
 				<key>subtext</key>
 				<string>Adds a new note to Notes.app from the clipboard</string>
 				<key>title</key>
@@ -272,23 +300,30 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 			<key>uid</key>
 			<string>A06E633A-6DA1-480D-9666-79AE7FA0E96B</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
-			<dict/>
+			<dict>
+				<key>openwith</key>
+				<string></string>
+				<key>sourcefile</key>
+				<string></string>
+			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openfile</string>
 			<key>uid</key>
 			<string>CE8709B4-F813-4766-982F-4BD872C7BF77</string>
 			<key>version</key>
-			<integer>1</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
 				<key>anchorfields</key>
 				<true/>
+				<key>argumenttype</key>
+				<integer>0</integer>
 				<key>daterange</key>
 				<integer>0</integer>
 				<key>fields</key>
@@ -322,6 +357,8 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 				<false/>
 				<key>keyword</key>
 				<string>n</string>
+				<key>runningsubtext</key>
+				<string></string>
 				<key>scopes</key>
 				<array>
 					<string>~/Library/Containers/com.apple.Notes</string>
@@ -342,7 +379,7 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 			<key>uid</key>
 			<string>6903AA5D-B4EF-4B6A-837F-8FC842FD9721</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -368,36 +405,50 @@ Uses AppleScript implementation of the Workflow object class for Alfred 2 (https
 	<dict>
 		<key>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>180</real>
 		</dict>
 		<key>159A291E-3339-491E-8D3F-79091BE0319B</key>
 		<dict>
+			<key>xpos</key>
+			<integer>700</integer>
 			<key>ypos</key>
 			<real>60</real>
 		</dict>
 		<key>6903AA5D-B4EF-4B6A-837F-8FC842FD9721</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>300</real>
 		</dict>
 		<key>A06E633A-6DA1-480D-9666-79AE7FA0E96B</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>180</real>
 		</dict>
 		<key>CE8709B4-F813-4766-982F-4BD872C7BF77</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>300</real>
 		</dict>
 		<key>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>60</real>
 		</dict>
 		<key>FFC9C9E2-2539-44FD-A081-41DE4D12210D</key>
 		<dict>
+			<key>xpos</key>
+			<integer>500</integer>
 			<key>ypos</key>
 			<real>60</real>
 		</dict>
