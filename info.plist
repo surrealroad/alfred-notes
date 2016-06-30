@@ -3,9 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>com.surrealroad.alfred-note</string>
+	<string>com.surrealroad.alfred-note-icloud</string>
 	<key>connections</key>
 	<dict>
+		<key>6903AA5D-B4EF-4B6A-837F-8FC842FD9721</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>CE8709B4-F813-4766-982F-4BD872C7BF77</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>A06E633A-6DA1-480D-9666-79AE7FA0E96B</key>
 		<array>
 			<dict>
@@ -59,11 +70,11 @@
 	<key>createdby</key>
 	<string>Jack James</string>
 	<key>description</key>
-	<string>Adds notes to Notes.app</string>
+	<string>Adds notes to iCloud-enabled Notes.app</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>Notes</string>
+	<string>Notes (iCloud)</string>
 	<key>objects</key>
 	<array>
 		<dict>
@@ -75,6 +86,14 @@
 				<integer>4</integer>
 				<key>keyword</key>
 				<string>n</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
 				<key>runningsubtext</key>
 				<string>Fetching notes…</string>
 				<key>script</key>
@@ -84,11 +103,11 @@ property cacheExpires : 2 * minutes
 property shouldCheckForUpdates : true
 property checkFrequency : 4 * days
 
-property currentVersion : 8
+property currentVersion : 3
 property workflowFolder : do shell script "pwd"property lib : load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
 property wf : load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
 property wfname : "Notes"
-property bundleid : "com.surrealroad.alfred-note"property uid : "add-note"property addActionTitle : "Add Note"property cacheFile : "cache.plist"
+property bundleid : "com.surrealroad.alfred-note-icloud"property uid : "add-note"property addActionTitle : "Add Note"property cacheFile : "cache.plist"
 
 set wf to wf's new_workflow_with_bundle(bundleid)
 set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alfred_script(q)
@@ -151,6 +170,8 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
 				<key>escaping</key>
 				<integer>4</integer>
 				<key>script</key>
@@ -162,7 +183,10 @@ property bundleid : "com.surrealroad.alfred-note"property cacheFile : "cache.pl
 
 set wf to wf's new_workflow_with_bundle(bundleid)
 
-my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf, alwaysShow)	else		lib's createNote(first paragraph of q, q, notesFolder, notesAccount, alwaysShow)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
+my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf, alwaysShow)	else
+		if (count of paragraphs of q) is greater than 1 then			set theBody to paragraphs 2 thru -1 of q
+		else
+			set theBody to ""		end if		lib's createNote(first paragraph of q,  theBody, notesFolder, notesAccount, alwaysShow)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
 				<key>type</key>
 				<integer>6</integer>
 			</dict>
@@ -176,12 +200,48 @@ my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		op
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>script</key>
+				<string>property notesAccount : ""property notesFolder : ""
+property workflowFolder : do shell script "pwd"property lib: load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
+property wf: load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
+property bundleid : "com.surrealroad.alfred-note"property cacheFile : "cache.plist"
+
+set wf to wf's new_workflow_with_bundle(bundleid)
+
+my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf, true)	else		if (count of paragraphs of q) is greater than 1 then			set theBody to paragraphs 2 thru -1 of q
+		else
+			set theBody to ""		end if		lib's createNote(first paragraph of q,  theBody, notesFolder, notesAccount, true)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
+				<key>type</key>
+				<integer>6</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
 				<integer>4</integer>
 				<key>keyword</key>
 				<string>nclip</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
 				<key>runningsubtext</key>
 				<string>Adds a new note to Notes.app from the clipboard</string>
 				<key>script</key>
@@ -216,25 +276,71 @@ set workflowFolder of lib to workflowFoldermy alfred_script("{query}")on alf
 		</dict>
 		<dict>
 			<key>config</key>
+			<dict/>
+			<key>type</key>
+			<string>alfred.workflow.action.openfile</string>
+			<key>uid</key>
+			<string>CE8709B4-F813-4766-982F-4BD872C7BF77</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
 			<dict>
-				<key>escaping</key>
-				<integer>4</integer>
-				<key>script</key>
-				<string>property notesAccount : ""property notesFolder : ""
-property workflowFolder : do shell script "pwd"property lib: load script POSIX file (workflowFolder &amp; "/alfred_library.scpt")
-property wf: load script POSIX file (workflowFolder &amp; "/q_workflow.scpt")
-property bundleid : "com.surrealroad.alfred-note"property cacheFile : "cache.plist"
-
-set wf to wf's new_workflow_with_bundle(bundleid)
-
-my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		open location lib's getVersionURL(bundleid)		return	end if	--lib's setNotesActive()	if q starts with "uid:" then		set theUID to (characters 5 thru -1 of q) as string		return	else if q starts with "nclip:" then		try			set q to (characters 7 thru -1 of q) as string		on error			set q to ""		end try		set theResult to "Created note from clipboard: " &amp; lib's noteFromClipboard(q, notesFolder, notesAccount, wf, true)	else		lib's createNote(first paragraph of q, q, notesFolder, notesAccount, true)		set theResult to "Created note: " &amp; q	end if	return theResultend alfred_script</string>
-				<key>type</key>
-				<integer>6</integer>
+				<key>anchorfields</key>
+				<true/>
+				<key>daterange</key>
+				<integer>0</integer>
+				<key>fields</key>
+				<array>
+					<dict>
+						<key>field</key>
+						<string>kMDItemDisplayName</string>
+						<key>not</key>
+						<false/>
+						<key>split</key>
+						<true/>
+						<key>value</key>
+						<string>{query}</string>
+						<key>words</key>
+						<true/>
+					</dict>
+					<dict>
+						<key>field</key>
+						<string>kMDItemTextContent</string>
+						<key>not</key>
+						<false/>
+						<key>split</key>
+						<true/>
+						<key>value</key>
+						<string>{query}</string>
+						<key>words</key>
+						<true/>
+					</dict>
+				</array>
+				<key>includesystem</key>
+				<false/>
+				<key>keyword</key>
+				<string>n</string>
+				<key>scopes</key>
+				<array>
+					<string>~/Library/Containers/com.apple.Notes</string>
+				</array>
+				<key>subtext</key>
+				<string>Look for Notes.app notes</string>
+				<key>title</key>
+				<string>Search Notes</string>
+				<key>types</key>
+				<array>
+					<string>com.apple.notes.externalrecord</string>
+				</array>
+				<key>withspace</key>
+				<true/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.script</string>
+			<string>alfred.workflow.input.filefilter</string>
 			<key>uid</key>
-			<string>05A11783-4E0A-44F5-9EB3-D3CF6824EF1B</string>
+			<string>6903AA5D-B4EF-4B6A-837F-8FC842FD9721</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -243,7 +349,11 @@ my alfred_script("{query}")on alfred_script(q)	if q is "@@UPDATE@@" then		op
 	<string>To use, just type "n note_text" into Alfred. E.g. "n something very important I will probably forget"
 To create a note from the clipboard, type "nclip optional_note_name"
  
+This workflow will only work with iCloud-enabled Notes accounts. See the thread http://www.alfredforum.com/topic/1009-add-new-note/ for the alternate version
+
 Changelog:
+Wednesday, 27 January 2016 – Fixed an issue with notes from clipboard not working; existing notes are now searched too (thanks, Vero!)
+Friday, 16 October 2015 – Split workflow to a new one that is iCloud-enabled
 Monday, 27 October 2014 – workaround for apple bug #18734006 on OS 10.10
 Monday, 13 October 2014 – Hold option to open note window after creation
 Tuesday, 17 September 2013 – Updated q_workflow module to latest version
@@ -266,10 +376,20 @@ Uses AppleScript implementation of the Workflow object class for Alfred 2 (https
 			<key>ypos</key>
 			<real>60</real>
 		</dict>
+		<key>6903AA5D-B4EF-4B6A-837F-8FC842FD9721</key>
+		<dict>
+			<key>ypos</key>
+			<real>300</real>
+		</dict>
 		<key>A06E633A-6DA1-480D-9666-79AE7FA0E96B</key>
 		<dict>
 			<key>ypos</key>
 			<real>180</real>
+		</dict>
+		<key>CE8709B4-F813-4766-982F-4BD872C7BF77</key>
+		<dict>
+			<key>ypos</key>
+			<real>300</real>
 		</dict>
 		<key>F091FF34-55E2-45C1-ABD7-32DCA6578F3D</key>
 		<dict>
