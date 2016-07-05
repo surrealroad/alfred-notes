@@ -590,13 +590,9 @@ on noteFromClipboard(q, notesFolder, notesAccount, wf, showNote)
 	if q is not "" then
 		set noteTitle to q
 	else
-		set noteTitle to first paragraph of (the clipboard as string)
-		if (count of paragraphs of (the clipboard as string)) is greater than 1 then
-			set theBody to paragraphs 2 thru -1 of (the clipboard as string)
-		else
-			set theBody to ""
-		end if
+		set noteTitle to first paragraph of (the clipboard as Unicode text)
 	end if
+	set theBody to noteHTMLText
 	createNote(noteTitle, theBody, notesFolder, notesAccount, showNote)
 	return noteTitle
 end noteFromClipboard
